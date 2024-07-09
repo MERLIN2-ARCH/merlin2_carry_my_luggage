@@ -1,0 +1,11 @@
+#JSGF V1.0;
+
+grammar carry;
+
+public <carry> = <affirmative> | <negative> | <ready>;
+
+<affirmative> = (yes | yeah | yep | sure | absolutely | definitely | of course | affirmative | indeed | right | correct){ yes };
+
+<negative> = (no | nope | nah | not at all | negative | no way | absolutely not | definitely not | never | not really){ no };
+
+<ready> = (ready | it is ready | prepared | set | good to go | all set){ ready };

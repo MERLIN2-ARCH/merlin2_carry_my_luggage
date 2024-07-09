@@ -94,7 +94,7 @@ class Merlin2PickBagAction(Merlin2FsmAction):
         )
 
     def prepare_carry_speaking(self, blackboard: Blackboard) -> str:
-        blackboard.text = "Please, give your bag, I will carry it for you. Tell me when it is ready."
+        blackboard.text = "Please, give me your bag, I will carry for you. Tell me when it is ready."
         return SUCCEED
 
     def prepare_follow_speaking(self, blackboard: Blackboard) -> str:

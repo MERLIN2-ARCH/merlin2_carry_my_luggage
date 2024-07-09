@@ -21,7 +21,6 @@ from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
-import ament_index_python
 
 from kant_dao.dao_factory import DaoFamilies
 
@@ -136,7 +135,7 @@ def generate_launch_description():
             "waypoint_navigation.launch.py"
         )),
         launch_arguments={"wps": os.path.join(
-            ament_index_python.get_package_share_directory(
+            get_package_share_directory(
                 "merlin2_carry_my_luggage_bringup"),
             "/params/waypoints.yaml"
         )}.items()
@@ -149,10 +148,15 @@ def generate_launch_description():
         )),
         launch_arguments={
             "stt_grammar": os.path.join(
-                ament_index_python.get_package_share_directory(
+                get_package_share_directory(
                     "merlin2_carry_my_luggage_bringup"),
-                "/params/grammar.gram"
-            )}.items()
+                "params/carry.gram"),
+            "parser_grammar": os.path.join(
+                get_package_share_directory(
+                    "merlin2_carry_my_luggage_bringup"),
+                "params/carry.gram"),
+            "stt_service": "google"
+        }.items()
     )
 
     tts_cmd = IncludeLaunchDescription(
