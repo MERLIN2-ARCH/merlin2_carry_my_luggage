@@ -2,7 +2,14 @@
 
 ## Installation
 
-Install [MERLIN2](https://github.com/MERLIN2-ARCH/merlin2?tab=readme-ov-file#installation), [yolov8_ros](https://github.com/mgonzs13/yolov8_ros) and [tiago_navigation](https://github.com/MERLIN2-ARCH/tiago_navigation).
+Install [MERLIN2](https://github.com/MERLIN2-ARCH/merlin2?tab=readme-ov-file#installation), [yolov8_ros](https://github.com/mgonzs13/yolov8_ros) and [tiago_navigation](https://github.com/MERLIN2-ARCH/tiago_navigation). Then clone this repository:
+
+```shell
+$ cd ~/ros2_ws/src
+$ git clone https://github.com/MERLIN2-ARCH/merlin2_carry_my_luggage.git
+$ cd ~/ros2_ws
+$ colcon build
+```
 
 ## Usage
 
