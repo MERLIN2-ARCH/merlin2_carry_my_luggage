@@ -129,8 +129,8 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
     ############# PDDL #############
     ################################
     def create_objects(self) -> rclpy.List[PddlObjectDto]:
-        self.person = PddlObjectDto(person_type, "person")
-        self.bag = PddlObjectDto(bag_type, "bag")
+        self.person = PddlObjectDto(person_type, "Miguel")
+        self.bag = PddlObjectDto(bag_type, "my_bag")
 
         self.person_wp = PddlObjectDto(wp_type, "person_wp")
         self.bag_wp = PddlObjectDto(wp_type, "bag_wp")
@@ -147,9 +147,9 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
         ]
 
     def create_propositions(self) -> rclpy.List[PddlPropositionDto]:
-        robot_at_prop = PddlPropositionDto(robot_at, [self.starting_wp])
+        robot_at_prop = PddlPropositionDto(robot_at, [self.anywhere])
         person_at_prop = PddlPropositionDto(
-            person_at, [self.person, self.anywhere])
+            person_at, [self.person, self.starting_wp])
         bag_at_prop = PddlPropositionDto(bag_at, [self.bag, self.bag_wp])
         return [robot_at_prop, person_at_prop, bag_at_prop]
 

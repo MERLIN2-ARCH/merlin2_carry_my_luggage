@@ -46,7 +46,7 @@ def generate_launch_description():
     planner = LaunchConfiguration("planner")
     planner_cmd = DeclareLaunchArgument(
         "planner",
-        default_value="1",
+        default_value="2",
         description="PDDL planner")
 
     #
