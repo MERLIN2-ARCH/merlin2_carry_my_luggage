@@ -1,0 +1,10 @@
+#JSGF V1.0 UTF-8 en;
+
+grammar carry;
+
+
+public <carry> = <yes> | <no> | <ready>;
+
+<yes> = yes{ yes };
+<no> = no{ no };
+<ready> = (ready | it is ready){ ready };

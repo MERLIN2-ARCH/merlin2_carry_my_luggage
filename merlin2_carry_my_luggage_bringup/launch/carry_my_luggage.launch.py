@@ -136,14 +136,21 @@ def generate_launch_description():
             "waypoint_navigation.launch.py"
         )),
         launch_arguments={"wps": ament_index_python.get_package_share_directory(
-            "merlin2_demo") + "/params/granny.yaml"}.items()
+            "merlin2_carry_my_luggage_bringup") + "/params/waypoints.yaml"}.items()
     )
 
     stt_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(
             get_package_share_directory("speech_to_text"),
             "speech_to_text.launch.py"
-        ))
+        )),
+        launch_arguments={
+            "stt_grammar": os.pathsep.join(
+                ament_index_python.get_package_share_directory(
+                    "merlin2_carry_my_luggage_bringup"),
+                "/params/example.gram"
+            )
+        }.items()
     )
 
     tts_cmd = IncludeLaunchDescription(
