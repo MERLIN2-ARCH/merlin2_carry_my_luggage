@@ -34,7 +34,7 @@ int PointingNode::pointing_direction(
         &keypoints) {
   auto are_collinear =
       [](const std::array<double, 3> &A, const std::array<double, 3> &B,
-         const std::array<double, 3> &C, double threshold = 0.02) {
+         const std::array<double, 3> &C, double threshold = 0.01) {
         std::array<double, 3> AB = {B[0] - A[0], B[1] - A[1], B[2] - A[2]};
         std::array<double, 3> AC = {C[0] - A[0], C[1] - A[1], C[2] - A[2]};
 

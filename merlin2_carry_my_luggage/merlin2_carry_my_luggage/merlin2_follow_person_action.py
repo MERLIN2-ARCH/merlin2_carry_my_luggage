@@ -164,7 +164,7 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
 
     def create_addwp_cb(self, blackboard: Blackboard) -> AddWp.Request:
         req = AddWp.Request()
-        req.wp = blackboard.displace_pose
+        req.wp.pose = blackboard.displace_pose
         req.wp.id = "person_wp"
         return req
 

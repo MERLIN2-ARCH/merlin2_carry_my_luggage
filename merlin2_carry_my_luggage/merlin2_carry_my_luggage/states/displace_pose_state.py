@@ -36,6 +36,7 @@ class DisplacePoseState(State):
 
         super().__init__([SUCCEED, ABORT])
 
+        self.node = node
         self.distance = distance
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, node)
@@ -49,10 +50,10 @@ class DisplacePoseState(State):
         try:
             t = self.tf_buffer.lookup_transform(
                 "base_link",
-                "map",
+                "base_link",
                 rclpy.time.Time())
         except TransformException as ex:
-            self.get_logger().info(
+            self.node.get_logger().info(
                 f"Could not transform base_link to map: {ex}")
             return ABORT
 
