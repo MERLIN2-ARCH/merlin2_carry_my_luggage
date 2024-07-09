@@ -1,0 +1,9 @@
+waypoint_navigation:
+  waypoint_navigation_node:
+    ros__parameters:
+      wps:
+        - "starting_wp"
+        - "1.25"
+        - "6.30"
+        - "-0.78"
+        - "0.67"
