@@ -12,6 +12,15 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
+  <depend>rclpy</depend>
+  <depend>rclcpp</depend>
+  <depend>yolov8_msgs</depend>
+  <depend>yasmin</depend>
+  <depend>yasmin_ros</depend>
+  <depend>merlin2_mission</depend>
+  <depend>merlin2_fsm_action</depend>
+  <depend>merlin2_carry_my_luggage_msgs</depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

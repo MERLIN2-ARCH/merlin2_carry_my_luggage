@@ -26,10 +26,10 @@ from yasmin.blackboard import Blackboard
 from yasmin_ros.basic_outcomes import SUCCEED
 
 from merlin2_fsm_action import Merlin2FsmAction
+from merlin2_fsm_action import Merlin2BasicStates
 from merlin2_carry_my_luggage.pddl import bag_type, carry, carried_bag
 from merlin2_carry_my_luggage.pddl import followed_person, assisted_person
 from merlin2_basic_actions.merlin2_basic_types import person_type
-from merlin2_fsm_action import Merlin2BasicStates
 
 
 VALID = "valid"

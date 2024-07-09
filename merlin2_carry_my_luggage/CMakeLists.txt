@@ -7,14 +7,27 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(yolov8_msgs REQUIRED)
+find_package(merlin2_carry_my_luggage_msgs REQUIRED)
 
-
-
-install(PROGRAMS
-  ${PROJECT_NAME}/pointing_node.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME pointing_node
+INCLUDE_DIRECTORIES(
+  include
 )
+
+add_executable(pointing_node src/pointing_node.cpp)
+ament_target_dependencies(pointing_node PUBLIC rclcpp yolov8_msgs merlin2_carry_my_luggage_msgs)
+install(TARGETS
+  pointing_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# Python
+# install(PROGRAMS
+#   ${PROJECT_NAME}/pointing_node.py
+#   DESTINATION lib/${PROJECT_NAME}
+#   RENAME pointing_node
+# )
 
 install(PROGRAMS
   ${PROJECT_NAME}/merlin2_detect_bag_action.py
