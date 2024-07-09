@@ -94,7 +94,7 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
 
         goal = PddlPropositionDto(
             robot_at,
-            [self.person_wp],
+            [self.starting_wp],
             is_goal=True
         )
 
