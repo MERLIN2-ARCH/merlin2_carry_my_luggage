@@ -50,6 +50,22 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
         super().__init__("detect_bag")
 
         self.add_state(
+            "PREPARING_POINTING_SPEAKING",
+            CbState([SUCCEED], self.prepare_pointing_speaking),
+            transitions={
+                SUCCEED: "SPEAKING_POINTING"
+            }
+        )
+
+        self.add_state(
+            "SPEAKING_POINTING",
+            self.create_state(Merlin2BasicStates.TTS),
+            transitions={
+                SUCCEED: "LOOKING_FOR_POINTING"
+            }
+        )
+
+        self.add_state(
             "LOOKING_FOR_POINTING",
             MonitorState(
                 PointingArray,
@@ -82,26 +98,30 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
                 timeout=2
             ),
             transitions={
-                SUCCEED: "PREPARING_SPEAKING",
+                SUCCEED: "PREPARING_BAG_SPEAKING",
                 TIMEOUT: ABORT
             }
         )
 
         self.add_state(
-            "PREPARING_SPEAKING",
-            CbState([SUCCEED], self.prepare_speaking),
+            "PREPARING_BAG_SPEAKING",
+            CbState([SUCCEED], self.prepare_bag_speaking),
             transitions={
-                SUCCEED: "SPEAKING"
+                SUCCEED: "SPEAKING_BAG"
             }
         )
 
         self.add_state(
-            "SPEAKING",
+            "SPEAKING_BAG",
             self.create_state(Merlin2BasicStates.TTS),
             transitions={
                 SUCCEED: SUCCEED
             }
         )
+
+    def prepare_pointing_speaking(self, blackboard: Blackboard) -> str:
+        blackboard.text = "Please, point to bag you want me to carry."
+        return SUCCEED
 
     def manage_pointing_msgs(self, blackboard: Blackboard, msg: PointingArray) -> str:
 
@@ -118,13 +138,13 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
 
         return NEXT
 
-    def prepare_speaking(self, blackboard: Blackboard) -> str:
+    def prepare_bag_speaking(self, blackboard: Blackboard) -> str:
 
         side = "left"
 
         if blackboard.pointing.direction == 1:
             side = "right"
-        elif blackboard.pointing.direction == 1:
+        elif blackboard.pointing.direction == 0:
             side = "left"
 
         blackboard.text = f"I will carry you {side} bag."
