@@ -69,7 +69,7 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
 
         self.add_state(
             "CREATING_PERSON_WP",
-            DisplacePoseState(self),
+            DisplacePoseState(self, distance=0.2),
             transitions={
                 SUCCEED: "CHECKING_DISTANCE",
                 ABORT: "CREATING_PERSON_WP"
@@ -138,7 +138,7 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
             return CANCEL
 
         if msg.pointings:
-            blackboard.pointing = msg.pointings.data[0]
+            blackboard.pointing = msg.pointings[0]
             blackboard.pose = blackboard.pointing.detection.bbox3d.center
             return SUCCEED
 
@@ -149,8 +149,8 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
         displaced_pose = blackboard.displaced_pose
 
         if math.sqrt(
-            math.pow(pose.position.x, displaced_pose.position.x, 2) +
-            math.pow(pose.position.y, displaced_pose.position.y, 2)
+            math.pow(pose.position.x - displaced_pose.position.x, 2) +
+            math.pow(pose.position.y - displaced_pose.position.y, 2)
         ) <= 0.25:
             return NO_MOVED
 
@@ -164,7 +164,7 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
 
     def create_addwp_cb(self, blackboard: Blackboard) -> AddWp.Request:
         req = AddWp.Request()
-        req.wp.pose = blackboard.displace_pose
+        req.wp.pose = blackboard.displaced_pose
         req.wp.id = "person_wp"
         return req
 

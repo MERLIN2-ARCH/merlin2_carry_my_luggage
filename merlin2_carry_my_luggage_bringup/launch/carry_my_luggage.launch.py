@@ -176,6 +176,9 @@ def generate_launch_description():
             "image_reliability": "1",
             "depth_image_reliability": "1",
             "depth_info_reliability": "1",
+            "input_image_topic": "/head_front_camera/rgb/image_raw",
+            "input_depth_topic": "/head_front_camera/depth/image_raw",
+            "input_depth_info_topic": "/head_front_camera/depth/camera_info",
         }.items()
     )
 

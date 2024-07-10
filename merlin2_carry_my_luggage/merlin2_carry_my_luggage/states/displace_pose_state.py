@@ -49,7 +49,7 @@ class DisplacePoseState(State):
         # get tf
         try:
             t = self.tf_buffer.lookup_transform(
-                "base_link",
+                "map",
                 "base_link",
                 rclpy.time.Time())
         except TransformException as ex:
@@ -61,12 +61,12 @@ class DisplacePoseState(State):
              t.transform.translation.y]
 
         new_pose = self.displace_point(P, Q, self.distance)
-        blackboard.displace_pose = Pose()
-        blackboard.displace_pose.position.x = new_pose[0]
-        blackboard.displace_pose.position.y = new_pose[1]
-        blackboard.displace_pose.position.z = 0.0
-        blackboard.displace_pose.orientation.z = t.transform.rotation.z
-        blackboard.displace_pose.orientation.w = t.transform.rotation.w
+        blackboard.displaced_pose = Pose()
+        blackboard.displaced_pose.position.x = new_pose[0]
+        blackboard.displaced_pose.position.y = new_pose[1]
+        blackboard.displaced_pose.position.z = 0.0
+        blackboard.displaced_pose.orientation.z = t.transform.rotation.z
+        blackboard.displaced_pose.orientation.w = t.transform.rotation.w
         return SUCCEED
 
     @staticmethod
