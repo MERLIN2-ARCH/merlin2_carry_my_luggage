@@ -171,7 +171,7 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
         if math.sqrt(
             math.pow(pose.position.x - displaced_pose.position.x, 2) +
             math.pow(pose.position.y - displaced_pose.position.y, 2)
-        ) <= 0.25:
+        ) <= 0.3:
             return NO_MOVED
 
         return MOVED

@@ -14,6 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+import math
 import numpy as np
 from typing import List
 
@@ -32,12 +33,12 @@ from yasmin.blackboard import Blackboard
 
 class DisplacePoseState(State):
 
-    def __init__(self, node: Node, distance: float = 0.7) -> None:
+    def __init__(self, node: Node, distance_percentage: float = 0.7) -> None:
 
         super().__init__([SUCCEED, ABORT])
 
         self.node = node
-        self.distance = distance
+        self.distance_percentage = distance_percentage
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, node)
 
@@ -54,13 +55,20 @@ class DisplacePoseState(State):
                 rclpy.time.Time())
         except TransformException as ex:
             self.node.get_logger().info(
-                f"Could not transform base_link to map: {ex}")
+                f"Could not transform map to base_link: {ex}")
             return ABORT
 
         Q = [t.transform.translation.x,
              t.transform.translation.y]
 
-        new_pose = self.displace_point(P, Q, self.distance)
+        distance = math.sqrt(
+            math.pow(t.transform.translation.x -
+                     blackboard.pose.position.x, 2),
+            math.pow(t.transform.translation.y -
+                     blackboard.pose.position.y, 2)
+        ) * self.distance_percentage
+
+        new_pose = self.displace_point(P, Q, distance)
         blackboard.displaced_pose = Pose()
         blackboard.displaced_pose.position.x = new_pose[0]
         blackboard.displaced_pose.position.y = new_pose[1]
