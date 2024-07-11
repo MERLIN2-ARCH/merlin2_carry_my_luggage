@@ -26,7 +26,7 @@ from std_srvs.srv import Trigger
 
 from merlin2_basic_actions.merlin2_basic_types import wp_type, person_type
 from merlin2_basic_actions.merlin2_basic_predicates import robot_at, person_at
-from merlin2_carry_my_luggage.pddl import bag_type, bag_at, carried_bag
+from merlin2_carry_my_luggage.pddl import bag_type, bag_at, carried_bag, assisted_person
 
 from yasmin import CbState
 from yasmin.blackboard import Blackboard
@@ -105,13 +105,19 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
 
     def run_carry_mission(self, blackboard: Blackboard) -> str:
 
-        goal = PddlPropositionDto(
+        goal_1 = PddlPropositionDto(
             carried_bag,
             [self.bag],
             is_goal=True
         )
 
-        if self.execute_goal(goal):
+        goal_2 = PddlPropositionDto(
+            assisted_person,
+            [self.person],
+            is_goal=True
+        )
+
+        if self.execute_goals([goal_1, goal_2]):
             return SUCCEED
         else:
             return ABORT
