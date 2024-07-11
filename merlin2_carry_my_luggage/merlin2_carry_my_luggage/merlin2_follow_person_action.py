@@ -69,7 +69,7 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
 
         self.add_state(
             "CREATING_PERSON_WP",
-            DisplacePoseState(self, distance=0.2),
+            DisplacePoseState(self),
             transitions={
                 SUCCEED: "CHECKING_DISTANCE",
                 ABORT: "CREATING_PERSON_WP"
