@@ -129,7 +129,7 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
     ############# PDDL #############
     ################################
     def create_objects(self) -> rclpy.List[PddlObjectDto]:
-        self.person = PddlObjectDto(person_type, "Miguel")
+        self.person = PddlObjectDto(person_type, "miguel")
         self.bag = PddlObjectDto(bag_type, "my_bag")
 
         self.person_wp = PddlObjectDto(wp_type, "person_wp")
