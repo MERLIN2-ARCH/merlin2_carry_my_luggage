@@ -81,7 +81,23 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
             CbState([MOVED, NO_MOVED], self.check_distance),
             transitions={
                 MOVED: "ADDING_PERSON_WP",
-                NO_MOVED: "LISTENING"
+                NO_MOVED: "PREPARING_SPEAKING"
+            }
+        )
+
+        self.add_state(
+            "PREPARING_SPEAKING",
+            CbState([SUCCEED], self.prepare_speaking),
+            transitions={
+                SUCCEED: "SPEAKING"
+            }
+        )
+
+        self.add_state(
+            "SPEAKING",
+            self.create_state(Merlin2BasicStates.TTS),
+            transitions={
+                SUCCEED: "LISTENING"
             }
         )
 
@@ -131,6 +147,10 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
                 SUCCEED: "LOOKING_FOR_PERSON"
             }
         )
+
+    def prepare_speaking(self, blackboard: Blackboard) -> str:
+        blackboard.text = "Have we arrived yet to the destination?"
+        return SUCCEED
 
     def manage_pointing_msgs(self, blackboard: Blackboard, msg: PointingArray) -> str:
 
