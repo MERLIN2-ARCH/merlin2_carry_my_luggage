@@ -33,7 +33,7 @@ from yasmin.blackboard import Blackboard
 
 class DisplacePoseState(State):
 
-    def __init__(self, node: Node, distance_percentage: float = 0.7) -> None:
+    def __init__(self, node: Node, distance_percentage: float = 0.8) -> None:
 
         super().__init__([SUCCEED, ABORT])
 
@@ -63,7 +63,7 @@ class DisplacePoseState(State):
 
         distance = math.sqrt(
             math.pow(t.transform.translation.x -
-                     blackboard.pose.position.x, 2),
+                     blackboard.pose.position.x, 2) +
             math.pow(t.transform.translation.y -
                      blackboard.pose.position.y, 2)
         ) * self.distance_percentage

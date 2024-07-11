@@ -46,6 +46,7 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
 
     def __init__(self):
 
+        self.old_pose = None
         self.__wp = PddlObjectDto(wp_type, "wp")
         self.__bag = PddlObjectDto(bag_type, "b")
         self.__person = PddlObjectDto(person_type, "p")
@@ -165,13 +166,21 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
         return NO_NEXT
 
     def check_distance(self, blackboard: Blackboard) -> str:
-        pose = blackboard.pose
-        displaced_pose = blackboard.displaced_pose
 
-        if math.sqrt(
-            math.pow(pose.position.x - displaced_pose.position.x, 2) +
-            math.pow(pose.position.y - displaced_pose.position.y, 2)
-        ) <= 0.3:
+        distance = -1
+
+        if self.old_pose:
+
+            pose = blackboard.pose
+
+            distance = math.sqrt(
+                math.pow(pose.position.x - self.old_pose.position.x, 2) +
+                math.pow(pose.position.y - self.old_pose.position.y, 2)
+            )
+
+        self.old_pose = blackboard.pose
+
+        if distance >= 0 and distance <= 0.1:
             return NO_MOVED
 
         return MOVED
