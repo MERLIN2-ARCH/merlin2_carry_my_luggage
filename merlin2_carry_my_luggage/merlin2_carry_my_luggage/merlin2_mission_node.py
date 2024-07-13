@@ -124,7 +124,6 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
         res = self.execute_goals([goal_1, goal_2])
         self.profiler.stop()
         self.profiler.join()
-        self.profiler.save_data()
 
         if res:
             return SUCCEED
