@@ -22,13 +22,6 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# Python
-# install(PROGRAMS
-#   ${PROJECT_NAME}/pointing_node.py
-#   DESTINATION lib/${PROJECT_NAME}
-#   RENAME pointing_node
-# )
-
 install(PROGRAMS
   ${PROJECT_NAME}/merlin2_detect_bag_action.py
   DESTINATION lib/${PROJECT_NAME}
