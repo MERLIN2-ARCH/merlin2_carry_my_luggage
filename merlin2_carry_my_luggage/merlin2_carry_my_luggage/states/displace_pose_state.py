@@ -44,7 +44,7 @@ class DisplacePoseState(State):
 
     def execute(self, blackboard: Blackboard) -> str:
         # get person position
-        P = [blackboard.pose.position.x,
+        Q = [blackboard.pose.position.x,
              blackboard.pose.position.y]
 
         # get tf
@@ -58,7 +58,7 @@ class DisplacePoseState(State):
                 f"Could not transform map to base_link: {ex}")
             return ABORT
 
-        Q = [t.transform.translation.x,
+        P = [t.transform.translation.x,
              t.transform.translation.y]
 
         distance = math.sqrt(
