@@ -27,6 +27,7 @@ from std_srvs.srv import Trigger
 from merlin2_basic_actions.merlin2_basic_types import wp_type, person_type
 from merlin2_basic_actions.merlin2_basic_predicates import robot_at, person_at
 from merlin2_carry_my_luggage.pddl import bag_type, bag_at, carried_bag, assisted_person
+from merlin2_carry_my_luggage.system_profiler import SystemProfiler
 
 from yasmin import CbState
 from yasmin.blackboard import Blackboard
@@ -42,6 +43,8 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
             run_mission=False,
             outcomes=[SUCCEED, ABORT]
         )
+
+        self.profiler = SystemProfiler()
 
         # add states
         self.add_state(
@@ -117,7 +120,13 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
             is_goal=True
         )
 
-        if self.execute_goals([goal_1, goal_2]):
+        self.profiler.start()
+        res = self.execute_goals([goal_1, goal_2])
+        self.profiler.stop()
+        self.profiler.join()
+        self.profiler.save_data()
+
+        if res:
             return SUCCEED
         else:
             return ABORT
