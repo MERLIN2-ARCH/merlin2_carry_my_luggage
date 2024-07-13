@@ -137,7 +137,7 @@ def generate_launch_description():
         launch_arguments={"wps": os.path.join(
             get_package_share_directory(
                 "merlin2_carry_my_luggage_bringup"),
-            "/params/waypoints.yaml"
+            "params/waypoints.yaml"
         )}.items()
     )
 
