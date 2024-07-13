@@ -173,7 +173,8 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
             pose = blackboard["pose"]
 
             distance = math.sqrt(
-                math.pow(pose.position.x - blackboard["old_pose"].position.x, 2) +
+                math.pow(pose.position.x -
+                         blackboard["old_pose"].position.x, 2) +
                 math.pow(pose.position.y -
                          blackboard["old_pose"].position.y, 2)
             )
