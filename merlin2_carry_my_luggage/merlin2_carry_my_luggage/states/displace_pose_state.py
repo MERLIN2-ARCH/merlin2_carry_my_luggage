@@ -44,8 +44,8 @@ class DisplacePoseState(State):
 
     def execute(self, blackboard: Blackboard) -> str:
         # get person position
-        Q = [blackboard.pose.position.x,
-             blackboard.pose.position.y]
+        Q = [blackboard["pose"].position.x,
+             blackboard["pose"].position.y]
 
         # get tf
         try:
@@ -63,18 +63,18 @@ class DisplacePoseState(State):
 
         distance = math.sqrt(
             math.pow(t.transform.translation.x -
-                     blackboard.pose.position.x, 2) +
+                     blackboard["pose"].position.x, 2) +
             math.pow(t.transform.translation.y -
-                     blackboard.pose.position.y, 2)
+                     blackboard["pose"].position.y, 2)
         ) * self.distance_percentage
 
         new_pose = self.displace_point(P, Q, distance)
-        blackboard.displaced_pose = Pose()
-        blackboard.displaced_pose.position.x = new_pose[0]
-        blackboard.displaced_pose.position.y = new_pose[1]
-        blackboard.displaced_pose.position.z = 0.0
-        blackboard.displaced_pose.orientation.z = t.transform.rotation.z
-        blackboard.displaced_pose.orientation.w = t.transform.rotation.w
+        blackboard["displaced_pose"] = Pose()
+        blackboard["displaced_pose"].position.x = new_pose[0]
+        blackboard["displaced_pose"].position.y = new_pose[1]
+        blackboard["displaced_pose"].position.z = 0.0
+        blackboard["displaced_pose"].orientation.z = t.transform.rotation.z
+        blackboard["displaced_pose"].orientation.w = t.transform.rotation.w
         return SUCCEED
 
     @staticmethod

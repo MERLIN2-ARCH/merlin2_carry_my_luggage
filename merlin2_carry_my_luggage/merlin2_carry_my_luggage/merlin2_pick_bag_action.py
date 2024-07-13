@@ -94,15 +94,15 @@ class Merlin2PickBagAction(Merlin2FsmAction):
         )
 
     def prepare_carry_speaking(self, blackboard: Blackboard) -> str:
-        blackboard.text = "Please, give me your bag, I will carry for you. Tell me when it is ready."
+        blackboard["text"] = "Please, give me your bag, I will carry for you. Tell me when it is ready."
         return SUCCEED
 
     def prepare_follow_speaking(self, blackboard: Blackboard) -> str:
-        blackboard.text = "Go on, I will follow you."
+        blackboard["text"] = "Go on, I will follow you."
         return SUCCEED
 
     def check_stt(self, blackboard: Blackboard) -> str:
-        if blackboard.speech[0] == "ready":
+        if blackboard["speech"][0] == "ready":
             return VALID
 
         return REPEAT

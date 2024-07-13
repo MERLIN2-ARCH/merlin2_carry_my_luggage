@@ -46,7 +46,6 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
 
     def __init__(self):
 
-        self.old_pose = None
         self.__wp = PddlObjectDto(wp_type, "wp")
         self.__bag = PddlObjectDto(bag_type, "b")
         self.__person = PddlObjectDto(person_type, "p")
@@ -150,7 +149,7 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
         )
 
     def prepare_speaking(self, blackboard: Blackboard) -> str:
-        blackboard.text = "Have we arrived yet to the destination?"
+        blackboard["text"] = "Have we arrived yet to the destination?"
         return SUCCEED
 
     def manage_pointing_msgs(self, blackboard: Blackboard, msg: PointingArray) -> str:
@@ -159,8 +158,8 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
             return CANCEL
 
         if msg.pointings:
-            blackboard.pointing = msg.pointings[0]
-            blackboard.pose = blackboard.pointing.detection.bbox3d.center
+            blackboard["pointing"] = msg.pointings[0]
+            blackboard["pose"] = blackboard["pointing"].detection.bbox3d.center
             return SUCCEED
 
         return NO_NEXT
@@ -169,16 +168,17 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
 
         distance = -1
 
-        if self.old_pose:
+        if "old_pose" in blackboard:
 
-            pose = blackboard.pose
+            pose = blackboard["pose"]
 
             distance = math.sqrt(
-                math.pow(pose.position.x - self.old_pose.position.x, 2) +
-                math.pow(pose.position.y - self.old_pose.position.y, 2)
+                math.pow(pose.position.x - blackboard["old_pose"].position.x, 2) +
+                math.pow(pose.position.y -
+                         blackboard["old_pose"].position.y, 2)
             )
 
-        self.old_pose = blackboard.pose
+        blackboard["old_pose"] = blackboard["pose"]
 
         if distance >= 0 and distance <= 0.1:
             return NO_MOVED
@@ -186,19 +186,19 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
         return MOVED
 
     def check_stt(self, blackboard: Blackboard) -> str:
-        if blackboard.speech[0] == "yes":
+        if blackboard["speech"][0] == "yes":
             return YES
 
         return NO
 
     def create_addwp_cb(self, blackboard: Blackboard) -> AddWp.Request:
         req = AddWp.Request()
-        req.wp.pose = blackboard.displaced_pose
+        req.wp.pose = blackboard["displaced_pose"]
         req.wp.id = "person_wp"
         return req
 
     def preapre_navigation(self, blackboard: Blackboard) -> str:
-        blackboard.destination = "person_wp"
+        blackboard["destination"] = "person_wp"
         return SUCCEED
 
     ################################

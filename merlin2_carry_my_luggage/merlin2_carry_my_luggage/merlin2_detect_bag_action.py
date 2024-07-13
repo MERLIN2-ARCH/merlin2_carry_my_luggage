@@ -120,7 +120,7 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
         )
 
     def prepare_pointing_speaking(self, blackboard: Blackboard) -> str:
-        blackboard.text = "Please, point to bag you want me to carry."
+        blackboard["text"] = "Please, point to bag you want me to carry."
         return SUCCEED
 
     def manage_pointing_msgs(self, blackboard: Blackboard, msg: PointingArray) -> str:
@@ -132,8 +132,8 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
         for p in msg.pointings:
 
             if p.direction != -1:
-                blackboard.pointing = p
-                blackboard.pose = blackboard.pointing.detection.bbox3d.center
+                blackboard["pointing"] = p
+                blackboard["pose"] = blackboard["pointing"].detection.bbox3d.center
                 return SUCCEED
 
         return NEXT
@@ -142,17 +142,17 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
 
         side = "left"
 
-        if blackboard.pointing.direction == 1:
+        if blackboard["pointing"].direction == 1:
             side = "right"
-        elif blackboard.pointing.direction == 0:
+        elif blackboard["pointing"].direction == 0:
             side = "left"
 
-        blackboard.text = f"I will carry you {side} bag."
+        blackboard["text"] = f"I will carry you {side} bag."
         return SUCCEED
 
     def create_addwp_cb(self, blackboard: Blackboard) -> AddWp.Request:
         req = AddWp.Request()
-        req.wp.pose = blackboard.displaced_pose
+        req.wp.pose = blackboard["displaced_pose"]
         req.wp.id = "bag_wp"
         return req
 
