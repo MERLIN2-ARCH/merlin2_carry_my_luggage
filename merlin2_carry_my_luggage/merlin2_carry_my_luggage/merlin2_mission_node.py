@@ -136,7 +136,6 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
 
         self.get_logger().info(
             f"Traveled distance durin mission: {self.distance} meters")
-        pose_sub.destroy()
 
         if res:
             return SUCCEED
