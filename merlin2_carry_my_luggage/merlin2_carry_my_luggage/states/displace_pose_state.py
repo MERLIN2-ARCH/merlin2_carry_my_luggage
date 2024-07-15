@@ -33,7 +33,7 @@ from yasmin.blackboard import Blackboard
 
 class DisplacePoseState(State):
 
-    def __init__(self, node: Node, distance_percentage: float = 0.8) -> None:
+    def __init__(self, node: Node, distance_percentage: float = 0.7) -> None:
 
         super().__init__([SUCCEED, ABORT])
 
