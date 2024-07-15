@@ -16,6 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+import math
 import rclpy
 from kant_dto import PddlObjectDto
 from kant_dto import PddlPropositionDto
@@ -23,6 +24,7 @@ from merlin2_mission import Merlin2FsmMissionNode
 
 from threading import Event
 from std_srvs.srv import Trigger
+from geometry_msgs.msg import PoseWithCovarianceStamped
 
 from merlin2_basic_actions.merlin2_basic_types import wp_type, person_type
 from merlin2_basic_actions.merlin2_basic_predicates import robot_at, person_at
@@ -45,6 +47,8 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
         )
 
         self.profiler = SystemProfiler()
+        self.last_pose = None
+        self.distance = 0.0
 
         # add states
         self.add_state(
@@ -108,6 +112,11 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
 
     def run_carry_mission(self, blackboard: Blackboard) -> str:
 
+        self.last_pose = None
+        self.distance = 0.0
+        pose_sub = self.create_subscription(
+            PoseWithCovarianceStamped, "/amcl_pose", self.__pose_cb, 100)
+
         goal_1 = PddlPropositionDto(
             carried_bag,
             [self.bag],
@@ -125,6 +134,10 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
         self.profiler.stop()
         self.profiler.join()
 
+        self.get_logger().info(
+            f"Traveled distance durin mission: {self.distance} meters")
+        pose_sub.destroy()
+
         if res:
             return SUCCEED
         else:
@@ -138,6 +151,17 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
         self.event_start.set()
         res.success = True
         return res
+
+    def __pose_cb(self, msg: PoseWithCovarianceStamped):
+        pose = msg.pose.pose
+
+        if not self.last_pose is None:
+            new_distance = math.sqrt(
+                pow((pose.position.x - self.last_pose.position.x), 2) +
+                pow((pose.position.y - self.last_pose.position.y), 2))
+            self.distance += new_distance
+
+        self.last_pose = pose
 
     ################################
     ############# PDDL #############
