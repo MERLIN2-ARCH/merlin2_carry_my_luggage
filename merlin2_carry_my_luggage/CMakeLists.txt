@@ -8,7 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(yolov8_msgs REQUIRED)
+find_package(yolo_msgs REQUIRED)
 find_package(merlin2_carry_my_luggage_msgs REQUIRED)
 
 INCLUDE_DIRECTORIES(
@@ -16,7 +16,7 @@ INCLUDE_DIRECTORIES(
 )
 
 add_executable(pointing_node src/pointing_node.cpp)
-ament_target_dependencies(pointing_node PUBLIC rclcpp yolov8_msgs merlin2_carry_my_luggage_msgs)
+ament_target_dependencies(pointing_node PUBLIC rclcpp yolo_msgs merlin2_carry_my_luggage_msgs)
 install(TARGETS
   pointing_node
   DESTINATION lib/${PROJECT_NAME}

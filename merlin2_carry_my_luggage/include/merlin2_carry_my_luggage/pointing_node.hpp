@@ -8,9 +8,9 @@
 #include "merlin2_carry_my_luggage_msgs/msg/pointing.hpp"
 #include "merlin2_carry_my_luggage_msgs/msg/pointing_array.hpp"
 #include "rclcpp/rclcpp.hpp"
-#include "yolov8_msgs/msg/detection_array.hpp"
+#include "yolo_msgs/msg/detection_array.hpp"
 
-using namespace yolov8_msgs::msg;
+using namespace yolo_msgs::msg;
 using namespace merlin2_carry_my_luggage_msgs::msg;
 
 class PointingNode : public rclcpp::Node {

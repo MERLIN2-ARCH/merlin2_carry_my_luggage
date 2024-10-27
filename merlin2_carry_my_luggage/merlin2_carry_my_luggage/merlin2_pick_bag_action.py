@@ -48,24 +48,24 @@ class Merlin2PickBagAction(Merlin2FsmAction):
             "PREPARING_CARRY_SPEAKING",
             CbState([SUCCEED], self.prepare_carry_speaking),
             transitions={
-                SUCCEED: "SPEAKING_CARRY"
-            }
+                SUCCEED: "SPEAKING_CARRY",
+            },
         )
 
         self.add_state(
             "SPEAKING_CARRY",
             self.create_state(Merlin2BasicStates.TTS),
             transitions={
-                SUCCEED: "LISTENING"
-            }
+                SUCCEED: "LISTENING",
+            },
         )
 
         self.add_state(
             "LISTENING",
             self.create_state(Merlin2BasicStates.STT),
             transitions={
-                SUCCEED: "CHECKING_SPEECH"
-            }
+                SUCCEED: "CHECKING_SPEECH",
+            },
         )
 
         self.add_state(
@@ -73,28 +73,30 @@ class Merlin2PickBagAction(Merlin2FsmAction):
             CbState([VALID, REPEAT], self.check_stt),
             transitions={
                 VALID: "PREPARING_FOLLOW_SPEAKING",
-                REPEAT: "PREPARING_CARRY_SPEAKING"
-            }
+                REPEAT: "PREPARING_CARRY_SPEAKING",
+            },
         )
 
         self.add_state(
             "PREPARING_FOLLOW_SPEAKING",
             CbState([SUCCEED], self.prepare_follow_speaking),
             transitions={
-                SUCCEED: "SPEAKING_FOLLOW"
-            }
+                SUCCEED: "SPEAKING_FOLLOW",
+            },
         )
 
         self.add_state(
             "SPEAKING_FOLLOW",
             self.create_state(Merlin2BasicStates.TTS),
             transitions={
-                SUCCEED: SUCCEED
-            }
+                SUCCEED: SUCCEED,
+            },
         )
 
     def prepare_carry_speaking(self, blackboard: Blackboard) -> str:
-        blackboard["text"] = "Please, give me your bag, I will carry for you. Tell me when it is ready."
+        blackboard["text"] = (
+            "Please, give me your bag, I will carry for you. Tell me when it is ready."
+        )
         return SUCCEED
 
     def prepare_follow_speaking(self, blackboard: Blackboard) -> str:
@@ -116,21 +118,15 @@ class Merlin2PickBagAction(Merlin2FsmAction):
     def create_conditions(self) -> List[PddlConditionEffectDto]:
 
         condition_1 = PddlConditionEffectDto(
-            robot_at,
-            [self.__wp],
-            time=PddlConditionEffectDto.AT_START
+            robot_at, [self.__wp], time=PddlConditionEffectDto.AT_START
         )
 
         condition_2 = PddlConditionEffectDto(
-            bag_at,
-            [self.__bag, self.__wp],
-            time=PddlConditionEffectDto.AT_START
+            bag_at, [self.__bag, self.__wp], time=PddlConditionEffectDto.AT_START
         )
 
         condition_3 = PddlConditionEffectDto(
-            bag_detected,
-            [self.__bag],
-            time=PddlConditionEffectDto.AT_START
+            bag_detected, [self.__bag], time=PddlConditionEffectDto.AT_START
         )
 
         return [condition_1, condition_2, condition_3]
@@ -138,16 +134,14 @@ class Merlin2PickBagAction(Merlin2FsmAction):
     def create_effects(self) -> List[PddlConditionEffectDto]:
 
         effect_1 = PddlConditionEffectDto(
-            carry,
-            [self.__bag],
-            time=PddlConditionEffectDto.AT_END
+            carry, [self.__bag], time=PddlConditionEffectDto.AT_END
         )
 
         effect_2 = PddlConditionEffectDto(
             bag_at,
             [self.__bag, self.__wp],
             time=PddlConditionEffectDto.AT_END,
-            is_negative=True
+            is_negative=True,
         )
 
         return [effect_1, effect_2]

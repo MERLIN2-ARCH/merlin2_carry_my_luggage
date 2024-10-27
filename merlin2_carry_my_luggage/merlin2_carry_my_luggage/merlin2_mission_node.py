@@ -43,7 +43,7 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
         super().__init__(
             "merlin2_mission_node",
             run_mission=False,
-            outcomes=[SUCCEED, ABORT]
+            outcomes=[SUCCEED, ABORT],
         )
 
         self.profiler = SystemProfiler()
@@ -55,8 +55,8 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
             "WAITING_FOR_START",
             CbState([SUCCEED], self.waiting_for_start),
             transitions={
-                SUCCEED: "MOVING_TO_INITIAL_WP"
-            }
+                SUCCEED: "MOVING_TO_INITIAL_WP",
+            },
         )
 
         self.add_state(
@@ -64,8 +64,8 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
             CbState([SUCCEED, ABORT], self.move_to_initial_wp),
             transitions={
                 SUCCEED: "RUNNING_MISSION",
-                ABORT: ABORT
-            }
+                ABORT: ABORT,
+            },
         )
 
         self.add_state(
@@ -73,8 +73,8 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
             CbState([SUCCEED, ABORT], self.run_carry_mission),
             transitions={
                 SUCCEED: "RETURNING_TO_INITIAL_WP",
-                ABORT: "RETURNING_TO_INITIAL_WP"
-            }
+                ABORT: "RETURNING_TO_INITIAL_WP",
+            },
         )
 
         self.add_state(
@@ -82,14 +82,13 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
             CbState([SUCCEED, ABORT], self.move_to_initial_wp),
             transitions={
                 SUCCEED: SUCCEED,
-                ABORT: ABORT
-            }
+                ABORT: ABORT,
+            },
         )
 
         # create services to start the mission
         self.event_start = Event()
-        self.srv = self.create_service(
-            Trigger, "start_mission", self.start_mission_cb)
+        self.srv = self.create_service(Trigger, "start_mission", self.start_mission_cb)
 
     def waiting_for_start(self, blackboard: Blackboard) -> str:
         self.get_logger().info("Waiting for starting")
@@ -99,11 +98,7 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
 
     def move_to_initial_wp(self, blackboard: Blackboard) -> str:
 
-        goal = PddlPropositionDto(
-            robot_at,
-            [self.starting_wp],
-            is_goal=True
-        )
+        goal = PddlPropositionDto(robot_at, [self.starting_wp], is_goal=True)
 
         if self.execute_goal(goal):
             return SUCCEED
@@ -115,19 +110,12 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
         self.last_pose = None
         self.distance = 0.0
         pose_sub = self.create_subscription(
-            PoseWithCovarianceStamped, "/amcl_pose", self.__pose_cb, 100)
-
-        goal_1 = PddlPropositionDto(
-            carried_bag,
-            [self.bag],
-            is_goal=True
+            PoseWithCovarianceStamped, "/amcl_pose", self.__pose_cb, 100
         )
 
-        goal_2 = PddlPropositionDto(
-            assisted_person,
-            [self.person],
-            is_goal=True
-        )
+        goal_1 = PddlPropositionDto(carried_bag, [self.bag], is_goal=True)
+
+        goal_2 = PddlPropositionDto(assisted_person, [self.person], is_goal=True)
 
         self.profiler.start()
         res = self.execute_goals([goal_1, goal_2])
@@ -135,7 +123,8 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
         self.profiler.join()
 
         self.get_logger().info(
-            f"Traveled distance durin mission: {self.distance} meters")
+            f"Traveled distance durin mission: {self.distance} meters"
+        )
 
         if res:
             return SUCCEED
@@ -143,9 +132,7 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
             return ABORT
 
     def start_mission_cb(
-        self,
-        req: Trigger.Request,
-        res: Trigger.Response
+        self, req: Trigger.Request, res: Trigger.Response
     ) -> Trigger.Response:
         self.event_start.set()
         res.success = True
@@ -156,8 +143,9 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
 
         if not self.last_pose is None:
             new_distance = math.sqrt(
-                pow((pose.position.x - self.last_pose.position.x), 2) +
-                pow((pose.position.y - self.last_pose.position.y), 2))
+                pow((pose.position.x - self.last_pose.position.x), 2)
+                + pow((pose.position.y - self.last_pose.position.y), 2)
+            )
             self.distance += new_distance
 
         self.last_pose = pose
@@ -180,13 +168,12 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
             self.person_wp,
             self.bag_wp,
             self.starting_wp,
-            self.anywhere
+            self.anywhere,
         ]
 
     def create_propositions(self) -> rclpy.List[PddlPropositionDto]:
         robot_at_prop = PddlPropositionDto(robot_at, [self.anywhere])
-        person_at_prop = PddlPropositionDto(
-            person_at, [self.person, self.starting_wp])
+        person_at_prop = PddlPropositionDto(person_at, [self.person, self.starting_wp])
         bag_at_prop = PddlPropositionDto(bag_at, [self.bag, self.bag_wp])
         return [robot_at_prop, person_at_prop, bag_at_prop]
 

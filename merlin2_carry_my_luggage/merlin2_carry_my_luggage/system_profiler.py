@@ -22,11 +22,7 @@ import threading
 
 class SystemProfiler(threading.Thread):
 
-    def __init__(
-        self,
-        interval: int = 1,
-        filename: str = "system_profile.csv"
-    ) -> None:
+    def __init__(self, interval: int = 1, filename: str = "system_profile.csv") -> None:
 
         super().__init__()
 
@@ -34,8 +30,13 @@ class SystemProfiler(threading.Thread):
         self.filename = filename
         self.running = True
         self.fieldnames = [
-            "timestamp", "cpu_usage", "ram_usage",
-            "bytes_sent", "bytes_recv", "packets_sent", "packets_recv"
+            "timestamp",
+            "cpu_usage",
+            "ram_usage",
+            "bytes_sent",
+            "bytes_recv",
+            "packets_sent",
+            "packets_recv",
         ]
 
         with open(self.filename, "w", newline="") as f:
@@ -59,7 +60,7 @@ class SystemProfiler(threading.Thread):
                 "bytes_sent": net_io.bytes_sent - prev_net_io.bytes_sent,
                 "bytes_recv": net_io.bytes_recv - prev_net_io.bytes_recv,
                 "packets_sent": net_io.packets_sent - prev_net_io.packets_sent,
-                "packets_recv": net_io.packets_recv - prev_net_io.packets_recv
+                "packets_recv": net_io.packets_recv - prev_net_io.packets_recv,
             }
             prev_net_io = net_io
 

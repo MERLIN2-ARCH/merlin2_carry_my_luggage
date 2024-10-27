@@ -29,7 +29,12 @@ from yasmin_ros.basic_outcomes import SUCCEED, CANCEL, ABORT, TIMEOUT
 from merlin2_fsm_action import Merlin2FsmAction
 from merlin2_fsm_action import Merlin2BasicStates
 from merlin2_basic_actions.merlin2_basic_types import wp_type, person_type
-from merlin2_carry_my_luggage.pddl import bag_type, carry, followed_person, person_detected
+from merlin2_carry_my_luggage.pddl import (
+    bag_type,
+    carry,
+    followed_person,
+    person_detected,
+)
 from merlin2_carry_my_luggage.states import DisplacePoseState
 
 from merlin2_carry_my_luggage_msgs.msg import PointingArray
@@ -58,13 +63,13 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
                 PointingArray,
                 "pointing",
                 [SUCCEED, NO_NEXT, CANCEL],
-                self.manage_pointing_msgs
+                self.manage_pointing_msgs,
             ),
             transitions={
                 NO_NEXT: "LOOKING_FOR_PERSON",
                 SUCCEED: "CREATING_PERSON_WP",
-                CANCEL: CANCEL
-            }
+                CANCEL: CANCEL,
+            },
         )
 
         self.add_state(
@@ -72,8 +77,8 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
             DisplacePoseState(self, distance_percentage=0.25),
             transitions={
                 SUCCEED: "CHECKING_DISTANCE",
-                ABORT: "CREATING_PERSON_WP"
-            }
+                ABORT: "CREATING_PERSON_WP",
+            },
         )
 
         self.add_state(
@@ -81,32 +86,32 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
             CbState([MOVED, NO_MOVED], self.check_distance),
             transitions={
                 MOVED: "ADDING_PERSON_WP",
-                NO_MOVED: "PREPARING_SPEAKING"
-            }
+                NO_MOVED: "PREPARING_SPEAKING",
+            },
         )
 
         self.add_state(
             "PREPARING_SPEAKING",
             CbState([SUCCEED], self.prepare_speaking),
             transitions={
-                SUCCEED: "SPEAKING"
-            }
+                SUCCEED: "SPEAKING",
+            },
         )
 
         self.add_state(
             "SPEAKING",
             self.create_state(Merlin2BasicStates.TTS),
             transitions={
-                SUCCEED: "LISTENING"
-            }
+                SUCCEED: "LISTENING",
+            },
         )
 
         self.add_state(
             "LISTENING",
             self.create_state(Merlin2BasicStates.STT),
             transitions={
-                SUCCEED: "CHECKING_SPEECH"
-            }
+                SUCCEED: "CHECKING_SPEECH",
+            },
         )
 
         self.add_state(
@@ -114,38 +119,28 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
             CbState([YES, NO], self.check_stt),
             transitions={
                 YES: SUCCEED,
-                NO: "ADDING_PERSON_WP"
-            }
+                NO: "ADDING_PERSON_WP",
+            },
         )
 
         self.add_state(
             "ADDING_PERSON_WP",
             ServiceState(
-                AddWp,
-                "/waypoint_navigation/add_wp",
-                self.create_addwp_cb,
-                timeout=2
+                AddWp, "/waypoint_navigation/add_wp", self.create_addwp_cb, timeout=2
             ),
-            transitions={
-                SUCCEED: "PREPARING_NAVIGATION",
-                TIMEOUT: ABORT
-            }
+            transitions={SUCCEED: "PREPARING_NAVIGATION", TIMEOUT: ABORT},
         )
 
         self.add_state(
             "PREPARING_NAVIGATION",
             CbState([SUCCEED], self.preapre_navigation),
-            transitions={
-                SUCCEED: "NAVIGATING"
-            }
+            transitions={SUCCEED: "NAVIGATING"},
         )
 
         self.add_state(
             "NAVIGATING",
             self.create_state(Merlin2BasicStates.NAVIGATION),
-            transitions={
-                SUCCEED: "LOOKING_FOR_PERSON"
-            }
+            transitions={SUCCEED: "LOOKING_FOR_PERSON"},
         )
 
     def prepare_speaking(self, blackboard: Blackboard) -> str:
@@ -173,10 +168,8 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
             pose = blackboard["pose"]
 
             distance = math.sqrt(
-                math.pow(pose.position.x -
-                         blackboard["old_pose"].position.x, 2) +
-                math.pow(pose.position.y -
-                         blackboard["old_pose"].position.y, 2)
+                math.pow(pose.position.x - blackboard["old_pose"].position.x, 2)
+                + math.pow(pose.position.y - blackboard["old_pose"].position.y, 2)
             )
 
         blackboard["old_pose"] = blackboard["pose"]
@@ -211,15 +204,11 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
     def create_conditions(self) -> List[PddlConditionEffectDto]:
 
         condition_1 = PddlConditionEffectDto(
-            carry,
-            [self.__bag],
-            time=PddlConditionEffectDto.AT_START
+            carry, [self.__bag], time=PddlConditionEffectDto.AT_START
         )
 
         condition_2 = PddlConditionEffectDto(
-            person_detected,
-            [self.__person],
-            time=PddlConditionEffectDto.AT_START
+            person_detected, [self.__person], time=PddlConditionEffectDto.AT_START
         )
 
         return [condition_1, condition_2]
@@ -227,9 +216,7 @@ class Merlin2FollowPersonAction(Merlin2FsmAction):
     def create_effects(self) -> List[PddlConditionEffectDto]:
 
         effect_1 = PddlConditionEffectDto(
-            followed_person,
-            [self.__person],
-            time=PddlConditionEffectDto.AT_END
+            followed_person, [self.__person], time=PddlConditionEffectDto.AT_END
         )
 
         return [effect_1]

@@ -49,24 +49,24 @@ class Merlin2OfferBagAction(Merlin2FsmAction):
             "PREPARING_OFFER_SPEAKING",
             CbState([SUCCEED], self.prepare_offer_speaking),
             transitions={
-                SUCCEED: "SPEAKING_OFFER"
-            }
+                SUCCEED: "SPEAKING_OFFER",
+            },
         )
 
         self.add_state(
             "SPEAKING_OFFER",
             self.create_state(Merlin2BasicStates.TTS),
             transitions={
-                SUCCEED: "LISTENING"
-            }
+                SUCCEED: "LISTENING",
+            },
         )
 
         self.add_state(
             "LISTENING",
             self.create_state(Merlin2BasicStates.STT),
             transitions={
-                SUCCEED: "CHECKING_SPEECH"
-            }
+                SUCCEED: "CHECKING_SPEECH",
+            },
         )
 
         self.add_state(
@@ -74,24 +74,24 @@ class Merlin2OfferBagAction(Merlin2FsmAction):
             CbState([VALID, REPEAT], self.check_stt),
             transitions={
                 VALID: "PREPARING_BYE_SPEAKING",
-                REPEAT: "PREPARING_OFFER_SPEAKING"
-            }
+                REPEAT: "PREPARING_OFFER_SPEAKING",
+            },
         )
 
         self.add_state(
             "PREPARING_BYE_SPEAKING",
             CbState([SUCCEED], self.prepare_bye_speaking),
             transitions={
-                SUCCEED: "SPEAKING_BYE"
-            }
+                SUCCEED: "SPEAKING_BYE",
+            },
         )
 
         self.add_state(
             "SPEAKING_BYE",
             self.create_state(Merlin2BasicStates.TTS),
             transitions={
-                SUCCEED: SUCCEED
-            }
+                SUCCEED: SUCCEED,
+            },
         )
 
     def prepare_offer_speaking(self, blackboard: Blackboard) -> str:
@@ -117,15 +117,11 @@ class Merlin2OfferBagAction(Merlin2FsmAction):
     def create_conditions(self) -> List[PddlConditionEffectDto]:
 
         condition_1 = PddlConditionEffectDto(
-            carry,
-            [self.__bag],
-            time=PddlConditionEffectDto.AT_START
+            carry, [self.__bag], time=PddlConditionEffectDto.AT_START
         )
 
         condition_2 = PddlConditionEffectDto(
-            followed_person,
-            [self.__person],
-            time=PddlConditionEffectDto.AT_START
+            followed_person, [self.__person], time=PddlConditionEffectDto.AT_START
         )
 
         return [condition_1, condition_2]
@@ -133,15 +129,11 @@ class Merlin2OfferBagAction(Merlin2FsmAction):
     def create_effects(self) -> List[PddlConditionEffectDto]:
 
         effect_1 = PddlConditionEffectDto(
-            carried_bag,
-            [self.__bag],
-            time=PddlConditionEffectDto.AT_END
+            carried_bag, [self.__bag], time=PddlConditionEffectDto.AT_END
         )
 
         effect_2 = PddlConditionEffectDto(
-            assisted_person,
-            [self.__person],
-            time=PddlConditionEffectDto.AT_END
+            assisted_person, [self.__person], time=PddlConditionEffectDto.AT_END
         )
 
         return [effect_1, effect_2]

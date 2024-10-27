@@ -53,16 +53,16 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
             "PREPARING_POINTING_SPEAKING",
             CbState([SUCCEED], self.prepare_pointing_speaking),
             transitions={
-                SUCCEED: "SPEAKING_POINTING"
-            }
+                SUCCEED: "SPEAKING_POINTING",
+            },
         )
 
         self.add_state(
             "SPEAKING_POINTING",
             self.create_state(Merlin2BasicStates.TTS),
             transitions={
-                SUCCEED: "LOOKING_FOR_POINTING"
-            }
+                SUCCEED: "LOOKING_FOR_POINTING",
+            },
         )
 
         self.add_state(
@@ -71,13 +71,13 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
                 PointingArray,
                 "pointing",
                 [SUCCEED, NEXT, CANCEL],
-                self.manage_pointing_msgs
+                self.manage_pointing_msgs,
             ),
             transitions={
                 NEXT: "LOOKING_FOR_POINTING",
                 SUCCEED: "CREATING_BAG_WP",
-                CANCEL: CANCEL
-            }
+                CANCEL: CANCEL,
+            },
         )
 
         self.add_state(
@@ -85,38 +85,35 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
             DisplacePoseState(self),
             transitions={
                 SUCCEED: "ADDING_BAG_WP",
-                ABORT: "CREATING_BAG_WP"
-            }
+                ABORT: "CREATING_BAG_WP",
+            },
         )
 
         self.add_state(
             "ADDING_BAG_WP",
             ServiceState(
-                AddWp,
-                "/waypoint_navigation/add_wp",
-                self.create_addwp_cb,
-                timeout=2
+                AddWp, "/waypoint_navigation/add_wp", self.create_addwp_cb, timeout=2
             ),
             transitions={
                 SUCCEED: "PREPARING_BAG_SPEAKING",
-                TIMEOUT: ABORT
-            }
+                TIMEOUT: ABORT,
+            },
         )
 
         self.add_state(
             "PREPARING_BAG_SPEAKING",
             CbState([SUCCEED], self.prepare_bag_speaking),
             transitions={
-                SUCCEED: "SPEAKING_BAG"
-            }
+                SUCCEED: "SPEAKING_BAG",
+            },
         )
 
         self.add_state(
             "SPEAKING_BAG",
             self.create_state(Merlin2BasicStates.TTS),
             transitions={
-                SUCCEED: SUCCEED
-            }
+                SUCCEED: SUCCEED,
+            },
         )
 
     def prepare_pointing_speaking(self, blackboard: Blackboard) -> str:
@@ -165,15 +162,11 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
     def create_conditions(self) -> List[PddlConditionEffectDto]:
 
         condition_1 = PddlConditionEffectDto(
-            robot_at,
-            [self.__wp],
-            time=PddlConditionEffectDto.AT_START
+            robot_at, [self.__wp], time=PddlConditionEffectDto.AT_START
         )
 
         condition_2 = PddlConditionEffectDto(
-            person_at,
-            [self.__person, self.__wp],
-            time=PddlConditionEffectDto.AT_START
+            person_at, [self.__person, self.__wp], time=PddlConditionEffectDto.AT_START
         )
 
         return [condition_1, condition_2]
@@ -181,15 +174,11 @@ class Merlin2DetectBagAction(Merlin2FsmAction):
     def create_effects(self) -> List[PddlConditionEffectDto]:
 
         effect_1 = PddlConditionEffectDto(
-            bag_detected,
-            [self.__bag],
-            time=PddlConditionEffectDto.AT_END
+            bag_detected, [self.__bag], time=PddlConditionEffectDto.AT_END
         )
 
         effect_2 = PddlConditionEffectDto(
-            person_detected,
-            [self.__person],
-            time=PddlConditionEffectDto.AT_END
+            person_detected, [self.__person], time=PddlConditionEffectDto.AT_END
         )
 
         return [effect_1, effect_2]

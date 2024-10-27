@@ -14,7 +14,7 @@
 
   <depend>rclpy</depend>
   <depend>rclcpp</depend>
-  <depend>yolov8_msgs</depend>
+  <depend>yolo_msgs</depend>
   <depend>yasmin</depend>
   <depend>yasmin_ros</depend>
   <depend>merlin2_mission</depend>
