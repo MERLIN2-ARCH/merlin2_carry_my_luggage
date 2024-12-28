@@ -1,4 +1,4 @@
-# Copyright (C) 2024  Miguel Ángel González Santamarta
+# Copyright (C) 2024 Miguel Ángel González Santamarta
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,29 +44,24 @@ class DisplacePoseState(State):
 
     def execute(self, blackboard: Blackboard) -> str:
         # get person position
-        Q = [blackboard["pose"].position.x,
-             blackboard["pose"].position.y]
+        Q = [blackboard["pose"].position.x, blackboard["pose"].position.y]
 
         # get tf
         try:
-            t = self.tf_buffer.lookup_transform(
-                "map",
-                "base_link",
-                rclpy.time.Time())
+            t = self.tf_buffer.lookup_transform("map", "base_link", rclpy.time.Time())
         except TransformException as ex:
-            self.node.get_logger().info(
-                f"Could not transform map to base_link: {ex}")
+            self.node.get_logger().info(f"Could not transform map to base_link: {ex}")
             return ABORT
 
-        P = [t.transform.translation.x,
-             t.transform.translation.y]
+        P = [t.transform.translation.x, t.transform.translation.y]
 
-        distance = math.sqrt(
-            math.pow(t.transform.translation.x -
-                     blackboard["pose"].position.x, 2) +
-            math.pow(t.transform.translation.y -
-                     blackboard["pose"].position.y, 2)
-        ) * self.distance_percentage
+        distance = (
+            math.sqrt(
+                math.pow(t.transform.translation.x - blackboard["pose"].position.x, 2)
+                + math.pow(t.transform.translation.y - blackboard["pose"].position.y, 2)
+            )
+            * self.distance_percentage
+        )
 
         new_pose = self.displace_point(P, Q, distance)
         blackboard["displaced_pose"] = Pose()

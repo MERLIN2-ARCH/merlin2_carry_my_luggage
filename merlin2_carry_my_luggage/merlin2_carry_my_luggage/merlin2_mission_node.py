@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (C) 2024  Miguel Ángel González Santamarta
+# Copyright (C) 2024 Miguel Ángel González Santamarta
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -122,9 +122,7 @@ class Merlin2MissionNode(Merlin2FsmMissionNode):
         self.profiler.stop()
         self.profiler.join()
 
-        self.get_logger().info(
-            f"Traveled distance durin mission: {self.distance} meters"
-        )
+        self.get_logger().info(f"Traveled distance durin mission: {self.distance} meters")
 
         if res:
             return SUCCEED
